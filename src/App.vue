@@ -1,28 +1,38 @@
 <template>
-  <div
-    class="Hi"
-    @scroll="changeColor()">
-  </div>
-  <h1 v-show="isShow"> 
-    Hello?!
-  </h1>
+  <button @click="handler">
+    Click me!
+  </button>
+  <ul>
+    <li
+      v-for="{ id, name } in newFruits"
+      :key="id">
+      {{ name }}-{{ id }}
+    </li>
+  </ul>
 </template>
 
 <script>
+// 고유한 형태의 아이디를 만듬
+import shortid from 'shortid'
+
 export default {
   data() {
     return {
-      isShow: false,
-      count: 0
+      fruits: ['Apple', 'Banana', 'Cherry']
     }
+  },
+  computed: {
+    newFruits() {
+      return this.fruits.map(fruit => ({
+          id: shortid.generate(),
+          name: fruit,
+        })
+      )
+    }  
   },
   methods: {
     handler() {
-      this.isShow = !this.isShow
-      this.count += 1
-    },
-    changeColor() {
-      S
+      this.fruits.push('Oragne')
     }
   }
 }
