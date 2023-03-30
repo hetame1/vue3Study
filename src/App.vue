@@ -1,12 +1,10 @@
 <template>
-  <button @click="handler()">
-    Click me!
-  </button>
+  <div
+    class="Hi"
+    @scroll="changeColor()">
+  </div>
   <h1 v-show="isShow"> 
     Hello?!
-  </h1>
-  <h1 v-if="isShow">
-    Hello!!
   </h1>
 </template>
 
@@ -22,6 +20,9 @@ export default {
     handler() {
       this.isShow = !this.isShow
       this.count += 1
+    },
+    changeColor() {
+      S
     }
   }
 }
