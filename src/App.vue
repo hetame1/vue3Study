@@ -1,15 +1,13 @@
 <template>
-  <input
-    type="text"
-    @keydown.enter="handler" />
+  <MyBtn />
 </template>
 
 <script>
+import MyBtn from '~/components/MyBtn'
+
 export default {
-  methods: {
-    handler() {
-      console.log('Enter!!')
-    }
+  components: {
+    MyBtn
   }
 }
 </script>

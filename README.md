@@ -204,4 +204,21 @@ methods: {
 ```
 인풋에 엔터를 입력하면 Enter 출력
 
+### 폼 입력 바인딩
+```jsx
+<h1> {{ msg }} </h1>
+<input
+  type="text"
+  v-model="msg" />
+
+data() {
+    return {
+      msg: 'Hello World!'
+    }
+  }
+```
+- 양방향 데이터 바인딩
+입력한 값을 msg로 바로 적용시켜줌
+
+
 
