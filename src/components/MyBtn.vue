@@ -1,10 +1,11 @@
 <template>
   <div class="btn">
-    Apple
+    <slot name="icon"></slot>
+    <slot name="text"></slot>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .btn {
     display:  inline-block;
     margin: 4px;
@@ -14,4 +15,5 @@
     color: white;
     cursor: pointer;
   }
+  
 </style>

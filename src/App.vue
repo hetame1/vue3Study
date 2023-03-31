@@ -1,13 +1,16 @@
 <template>
-  <MyBtn />
+  <Hello ref="hello" />
 </template>
 
 <script>
-import MyBtn from '~/components/MyBtn'
+import Hello from '~/components/Hello'
 
 export default {
   components: {
-    MyBtn
+    Hello
+  },
+  mounted() {
+    console.log(this.$refs.hello.$el)
   }
 }
 </script>

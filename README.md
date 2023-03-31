@@ -26,7 +26,7 @@ HTML 속성 내에 이중중괄호를 사용할 수 없기 때문에
 ```jsx
 <div v-bind:style> Hello </div>
 // bind는 단축할 수 있음
-<div :style="스타일일"> Hello </div>
+<div :style="스타일"> Hello </div>
 data() {
   return {
     스타일: 'color : blue'
@@ -220,5 +220,188 @@ data() {
 - 양방향 데이터 바인딩
 입력한 값을 msg로 바로 적용시켜줌
 
+# 컴포넌트
 
+## Prop
 
+- Prop은 부모-자식 관계의 Components 관계에서 실행된다
+  - 부모 컴포넌트 안의 자식 `html태그 안에` 넘겨줄 prop을 선언한다
+  - 자식 컴포넌트의 script안에 `props안에 데이터 타입`(String, Array, Object..)을 명시해야하고, 디폴트값을 설정할 수 있다
+
+- 부모 컴포넌트에서 보내준 prop 데이터를 `자식 컴포넌트에서 직접 변형`이 불가능하다
+
+### slot
+
+- slot은 부모 컴포넌트에서 자식 컴포넌트의 엘리먼트를 지정할때 사용
+
+```jsx
+
+// 부모 컴포넌트
+<ChildComponent>
+  <button>버튼</button>
+</ChildComponent>
+
+import ChildComponent from "자식 컴포넌트"
+
+// 자식 컴포넌트
+<div>
+  <!--부모에서 정의한 '버튼'이 위치합니다 -->
+  <slot></slot>
+</div>
+```
+
+- slot에 이름을 붙여 사용 순서를 정해주는것도 가능
+
+```jsx
+// 부모 컴포넌트
+<template>
+  <MyBtn>
+    <template #icon>
+      <span>(B)</span>
+    </template>
+    <template #text>
+      <span>Banana</span>
+    </template>
+  </MyBtn>
+</template>
+
+// 자식 컴포넌트
+<template>
+  <div class="btn">
+    <slot name="icon"></slot>
+    <slot name="text"></slot>
+  </div>
+</template>
+```
+
+## 속성 상속
+
+- 부모 컴포넌트의 html 요소에 `class` 속성으로 값을 입력하면 자식 컴포넌트에 `class`이름의
+  클래스에 상속이 됨
+
+```jsx
+App.vue(부모 컴포넌트)
+<MyBtn class="orosy" style="color: red">Banana</MyBtn>
+
+MyBtn.vue(자식 컴포넌트)
+<template>
+  <div class="btn"> // 최상위 요소(Root Element)
+    <slot></slot>
+  </div>
+</template>
+
+```
+
+- 유의해야 할 점은 자식 컴포넌트안에 `template` 태그 안에 최상위 요소가 2개 이상있는 경우
+  어디에 상속이 되어야하는지 판단할 수 없기 때문에 두 요소 모두 상속이 되지 않음
+
+`inheritAttrs: false` 어떠한 속성들을 상속하지 않겠다 
+
+그러나 위와 같이 속성 상속의 옵션을 사용하지 않겠다고 명시한 경우, 필요하다면 개별적으로
+속성 상속을 사용할 수 있습니다
+
+`$attrs`을 사용하면 됩니다
+
+```jsx
+<template>
+  <div class="btn">
+    <slot></slot>
+  </div>
+  <h1 :class="$attrs.class" :style="$attrs.style"></h1> // 속성 상속
+</template>
+```
+- 하지만 이러한 경우 속성을 모두 입력해주어야 하기 때문에 부모 컴포넌트의 모든 속성을
+  상속하는 방법도 있으며, 이는
+```jsx
+<h1 v-bind="$attrs"></h1>
+```
+를 사용하면 된다 ( 약어 금지 )
+
+### Emit
+
+- `emit`은 다른 `component`에게 `현재 component`의 `event`나 `data`를 전달하기 위해 사용
+
+```jsx
+// 부모 컴포넌트
+<MyBtn @jihoon="log">Banana</MyBtn>
+
+methods: {
+  log() {
+    console.log('Click!!')
+  }
+}
+
+// 자식 컴포넌트
+
+<div class="btn">
+  <slot></slot>
+</div>
+<h1 @click="$emit('jihoon')">A</h1>
+
+<script>
+export default {
+  emits: [
+    'jihoon'
+  ]
+}
+</script>
+```
+
+### provide, inject
+
+부모에서 작성한 데이터 값을 자식컴포넌트가 사용하려면 prop을 이용해야 하는데,
+자식 밑에 자식이 계속 생길수록 prop을 계속 작성해야 한다.
+
+그것을 다른 방법으로 사용할수 있는데 그때 사용하는 것이 provide와 inject이다
+
+부모컴포넌트에 provide를 이용해 값을 저장하고 자식컴포넌트에서 inject를 이용해 값을 쓰면 된다
+
+```jsx
+// 부모 컴포넌트
+data() {
+  return {
+    message: 'Hello World'
+  }
+},
+provide() {
+  return {
+    msg: this.message
+  }
+}
+
+// 자식 컴포넌트 
+inject: ['msg']
+```
+
+**주의 해야 할 점**
+- 반응성을 유지할 수가 없음
+- 이것을 해결할 수 있는 방법이 있는데 computed를 이용하면됨
+
+```jsx
+import { computed } from 'vue'
+
+provide() {
+  return {
+    msg: computed(() => this.message)
+  }
+}
+
+// 출력할 때 msg.value 를 이용해야 함
+```
+
+### Refs
+
+원래 자바스크립트에서 <h1>내용</h1> 내용을 추출하려면
+document.querySelector('h1') 을 이용하거나 id를 추가해 검색을 한다
+vue에서는 이걸 간단하게 하는걸 지원하는데
+
+```jsx
+<h1 ref="hello">
+  Hello World!
+</h1>
+
+mounted() {
+  const h1El = this.$refs.hello
+  console.log(h1El.textContent)
+}
+```
