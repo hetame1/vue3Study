@@ -405,3 +405,33 @@ mounted() {
   console.log(h1El.textContent)
 }
 ```
+
+## 컴포지션
+
+코드를 가독성 좋게 바꿔줌
+```jsx
+data() {
+  return {
+    count: 0
+  }
+},
+methods: {
+  increase() {
+    this.count += 1
+  }
+}
+
+// 이 코드를 컴포지션형태로 바꾸면
+setup() {
+  let count = ref(0) // ref를 써야 값이 반응성을 가짐
+  function increase() {
+    count.value += 1
+  }
+
+  return {
+    count,
+    increase
+  }
+}
+
+```
